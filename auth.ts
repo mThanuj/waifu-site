@@ -25,10 +25,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         const { email, password } = credentials;
         if (
-          !email ||
-          !password ||
           typeof email !== "string" ||
-          typeof password !== "string"
+          typeof password !== "string" ||
+          !email ||
+          !password
         ) {
           throw new Error("Email and password are required");
         }
@@ -37,6 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .select()
           .from(usersTable)
           .where(eq(usersTable.email, email));
+
         if (users.length === 0) {
           throw new Error("Invalid credentials");
         }

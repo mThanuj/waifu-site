@@ -2,7 +2,6 @@
 
 import { signIn } from "@/auth";
 import axios from "axios";
-import { CredentialsSignin } from "next-auth";
 
 export const createUser = async (formData: {
   email: string;
@@ -11,7 +10,7 @@ export const createUser = async (formData: {
 }) => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/auth/users/signup",
+      `${process.env.NEXT_BASE_URL}/api/auth/users/signup`,
       formData,
     );
     return { success: response.status === 200, status: response.status };
@@ -25,9 +24,25 @@ export const signinUser = async (formData: {
   password: string;
 }) => {
   try {
-    await signIn("credentials", formData);
+    const result = await signIn("credentials", {
+      ...formData,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      throw new Error(result.error);
+    }
+
+    if (result?.ok) {
+      return result;
+    }
   } catch (error) {
-    const err = error as CredentialsSignin;
-    throw new Error(err.cause?.err?.message);
+    if (error instanceof Error) {
+      throw new Error(
+        error.message || "An unknown error occurred during sign-in.",
+      );
+    }
+
+    throw new Error("An unexpected error occurred during sign-in.");
   }
 };
