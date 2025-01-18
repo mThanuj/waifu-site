@@ -1,6 +1,6 @@
-import config from "@/lib/constants";
+import "dotenv/config";
 import { drizzle } from "drizzle-orm/neon-http";
 
-const db = drizzle(config.env.databaseUrl);
+const db = drizzle(process.env.DATABASE_URL!);
 
 export default db;
