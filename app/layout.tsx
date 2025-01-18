@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "Waifu Site",
 };
 
-export default function RootLayout({
+export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
